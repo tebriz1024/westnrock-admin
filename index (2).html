@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="az">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#000000">
+<meta name="robots" content="noindex">
+<title>West'n'Rock | Admin</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#000;--card:#161617;--card2:#1d1d1f;--text:#f5f5f7;--sub:#d2d2d7;--muted:#86868b;--line:#2a2a2c;--out:#ff453a;--warn:#ff9f0a}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--text);font:15px/1.5 "Inter",-apple-system,system-ui,sans-serif;letter-spacing:-.01em;-webkit-font-smoothing:antialiased}
+h1,h2{margin:0;letter-spacing:-.03em}
+button,input,select,textarea{font:inherit;color:inherit}
+button{cursor:pointer;-webkit-tap-highlight-color:transparent}
+a{text-decoration:none}
+:focus-visible{outline:2px solid #2997ff;outline-offset:2px}
+.wrap{max-width:1040px;margin:auto;padding:0 20px}
+
+.btn{display:inline-block;border:0;border-radius:980px;padding:11px 22px;font-weight:500;background:var(--text);color:#000;transition:.15s;text-align:center}
+.btn:hover{opacity:.85}
+.btn:disabled{opacity:.4;cursor:not-allowed}
+.btn.ghost{background:var(--card2);color:var(--text)}
+.btn.ghost:hover{background:#2c2c2e;opacity:1}
+.btn.danger{background:transparent;color:var(--out);box-shadow:inset 0 0 0 1px #4a1d19}
+.btn.danger:hover{background:var(--out);color:#000;opacity:1}
+.btn.sm{padding:8px 16px;font-size:14px}
+label{display:block;font-size:13px;font-weight:600;color:var(--muted);margin-bottom:6px}
+.in{width:100%;background:#000;border:1px solid #3a3a3c;border-radius:12px;padding:12px 14px;font-size:16px;margin-bottom:16px}
+.in:focus{border-color:var(--text);outline:none}
+select.in{appearance:none;-webkit-appearance:none;background-image:linear-gradient(45deg,transparent 50%,#999 50%),linear-gradient(135deg,#999 50%,transparent 50%);background-position:calc(100% - 20px) 50%,calc(100% - 14px) 50%;background-size:6px 6px;background-repeat:no-repeat;padding-right:38px}
+.err{color:var(--out);font-size:14px;min-height:1.3em}
+
+/* login */
+#giris{max-width:380px;margin:14vh auto 0;padding:34px 28px;background:var(--card);border:1px solid var(--line);border-radius:26px}
+#giris h1{font-size:28px}
+#giris p{color:var(--muted);margin:4px 0 26px}
+#giris .btn{width:100%}
+@media(max-width:480px){#giris{margin:8vh 16px 0}}
+
+/* top */
+.top{position:sticky;top:0;z-index:20;background:#000000c8;backdrop-filter:saturate(180%) blur(20px);-webkit-backdrop-filter:saturate(180%) blur(20px);border-bottom:1px solid #ffffff14;padding-top:env(safe-area-inset-top)}
+.top .wrap{height:56px;display:flex;align-items:center;justify-content:space-between}
+.brand{font-size:18px;font-weight:700;letter-spacing:-.03em}
+.brand span{font-size:12px;font-weight:600;color:var(--muted);background:var(--card2);padding:3px 10px;border-radius:980px;margin-left:8px;vertical-align:2px}
+.top .r{display:flex;gap:8px}
+
+/* stats */
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:26px 0}
+.stat{background:var(--card);border-radius:20px;padding:18px 20px}
+.stat b{display:block;font-size:30px;font-weight:700;letter-spacing:-.04em;line-height:1.1}
+.stat span{color:var(--muted);font-size:13px}
+.stat.red b{color:var(--out)}
+@media(max-width:560px){.stats{gap:8px}.stat{padding:14px}.stat b{font-size:24px}}
+
+/* toolbar */
+.bar{display:flex;gap:10px;margin-bottom:16px}
+.bar .in{margin:0;border-radius:980px;padding:10px 18px;background:var(--card2);border-color:transparent}
+.bar .in:first-child{flex:1;min-width:0}
+.bar select.in{width:auto;flex:none}
+.bar .btn{flex:none}
+@media(max-width:620px){.bar{flex-wrap:wrap}.bar .in:first-child{flex:1 1 100%}.bar select.in{flex:1}}
+
+/* list */
+.row{display:grid;grid-template-columns:60px 1fr auto;gap:16px;align-items:center;background:var(--card);border-radius:20px;padding:12px;margin-bottom:10px}
+.row img{width:60px;height:75px;object-fit:cover;border-radius:12px;background:var(--card2);display:block}
+.row .n{font-weight:600;font-size:16px;letter-spacing:-.02em}
+.row .m{color:var(--muted);font-size:13px;margin-top:2px}
+.badge{display:inline-block;font-size:12px;font-weight:600;padding:2px 10px;border-radius:980px;background:var(--card2);color:var(--sub);margin-top:6px}
+.badge.red{background:#3a1512;color:var(--out)}
+.badge.warn{background:#3a2a0a;color:var(--warn)}
+.row .a{display:flex;gap:8px}
+@media(max-width:620px){.row{grid-template-columns:60px 1fr}.row .a{grid-column:1/-1}.row .a .btn{flex:1}}
+.empty{padding:48px 20px;text-align:center;color:var(--muted);background:var(--card);border-radius:20px}
+.foot{height:60px}
+
+/* drawer */
+.dbg{position:fixed;inset:0;background:#000000b8;display:none;justify-content:flex-end;z-index:50}
+.dbg.open{display:flex}
+.drawer{background:var(--card2);width:480px;max-width:100%;height:100%;display:flex;flex-direction:column;animation:sl .3s cubic-bezier(.2,.8,.2,1)}
+@keyframes sl{from{transform:translateX(40px);opacity:0}to{transform:none;opacity:1}}
+@keyframes up{from{transform:translateY(40px);opacity:0}to{transform:none;opacity:1}}
+.dh{display:flex;justify-content:space-between;align-items:center;padding:18px 22px;border-bottom:1px solid var(--line)}
+.dh h2{font-size:20px}
+.x{width:34px;height:34px;border-radius:50%;border:0;background:#3a3a3c;line-height:1}
+.db{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;padding:22px}
+.df{display:flex;gap:10px;padding:14px 22px calc(14px + env(safe-area-inset-bottom));border-top:1px solid var(--line)}
+.df .btn{flex:1}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.chips{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px}
+.chip{border:0;background:#2c2c2e;color:var(--sub);font-weight:500;padding:9px 16px;border-radius:980px;transition:.15s;min-width:46px}
+.chip.on{background:var(--text);color:#000}
+.photo{display:block;margin-bottom:16px;cursor:pointer}
+.photo input{display:none}
+.pbox{height:150px;border:1.5px dashed #444;border-radius:16px;display:flex;align-items:center;justify-content:center;color:var(--muted);overflow:hidden;background:#000}
+.pbox img{width:100%;height:100%;object-fit:contain}
+@media(max-width:700px){.dbg{align-items:flex-end}.drawer{width:100%;height:94vh;height:94dvh;border-radius:24px 24px 0 0;animation-name:up}}
+
+#toast{position:fixed;left:50%;bottom:calc(24px + env(safe-area-inset-bottom));transform:translate(-50%,20px);background:var(--text);color:#000;font-weight:600;padding:12px 22px;border-radius:980px;opacity:0;pointer-events:none;transition:.25s;max-width:90vw;z-index:99}
+#toast.show{opacity:1;transform:translate(-50%,0)}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+
+<div id="giris">
+  <h1>Admin girişi</h1>
+  <p>İdarəetmə panelinə daxil ol.</p>
+  <label for="gEmail">Email</label>
+  <input class="in" id="gEmail" type="email" placeholder="email@gmail.com" autocomplete="username">
+  <label for="gSifre">Şifrə</label>
+  <input class="in" id="gSifre" type="password" placeholder="••••••••" autocomplete="current-password">
+  <button class="btn" id="gBtn">Daxil ol</button>
+  <div class="err" id="gXeta" style="margin-top:12px"></div>
+</div>
+
+<div id="app" hidden>
+  <div class="top"><div class="wrap">
+    <div class="brand">West'n'Rock<span>Admin</span></div>
+    <div class="r">
+      <a class="btn ghost sm" href="index.html">Mağaza</a>
+      <button class="btn ghost sm" id="cixisBtn">Çıxış</button>
+    </div>
+  </div></div>
+
+  <main class="wrap">
+    <div class="stats">
+      <div class="stat"><b id="sMehsul">0</b><span>Məhsul</span></div>
+      <div class="stat"><b id="sStok">0</b><span>Stokda (ədəd)</span></div>
+      <div class="stat red"><b id="sBitmis">0</b><span>Stoku bitən</span></div>
+    </div>
+    <div class="bar">
+      <input class="in" id="axtar" type="search" placeholder="Məhsul axtar…">
+      <select class="in" id="kFiltr" aria-label="Kateqoriya"></select>
+      <button class="btn" id="yeniBtn">+ Yeni məhsul</button>
+    </div>
+    <div id="list"></div>
+    <div class="foot"></div>
+  </main>
+</div>
+
+<div class="dbg" id="dBg">
+  <div class="drawer" role="dialog" aria-modal="true">
+    <div class="dh"><h2 id="dBaslig">Yeni məhsul</h2><button class="x" id="dBagla" aria-label="Bağla">✕</button></div>
+    <div class="db">
+      <label>Şəkil</label>
+      <label class="photo"><input type="file" id="fFoto" accept="image/*"><div class="pbox" id="pBox">+ Şəkil seç</div></label>
+
+      <label for="fAd">Ad</label>
+      <input class="in" id="fAd" placeholder="Məhsulun adı">
+
+      <div class="g2">
+        <div><label for="fKat">Kateqoriya</label>
+          <select class="in" id="fKat"></select></div>
+        <div><label for="fQiymet">Qiymət (AZN)</label>
+          <input class="in" id="fQiymet" type="number" inputmode="decimal" step="0.01" min="0"></div>
+      </div>
+
+      <label>Ölçülər</label>
+      <div class="chips" id="chips"></div>
+
+      <label for="fEded">Stok (ədəd)</label>
+      <input class="in" id="fEded" type="number" inputmode="numeric" min="0" value="1">
+
+      <label for="fAciqlama">Açıqlama</label>
+      <textarea class="in" id="fAciqlama" rows="3" placeholder="Qısa təsvir (məcburi deyil)"></textarea>
+
+      <div class="err" id="fXeta"></div>
+    </div>
+    <div class="df">
+      <button class="btn ghost" id="dLegv">Ləğv et</button>
+      <button class="btn" id="dSaxla">Əlavə et</button>
+    </div>
+  </div>
+</div>
+<div id="toast"></div>
+
+<script>
+const API = "https://westnrock-backend.onrender.com";
+const AD = {Jackets:"Gödəkçə", Jeans:"Cins", Hoodies:"Hudi", "T-Shirts":"Tişört", Shoes:"Ayaqqabı", Accessories:"Aksesuar"};
+const GEY = ["XS","S","M","L","XL","XXL"];
+const OLCULER = {Jackets:GEY, Hoodies:GEY, "T-Shirts":GEY, Jeans:["28","30","32","34","36","38"], Shoes:["36","37","38","39","40","41","42","43","44","45","46"], Accessories:["Standart"]};
+
+const $ = id => document.getElementById(id);
+const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+let token = sessionStorage.getItem("wnr_token");
+let mehsullar = [], secilen = new Set(), redaktId = null, saxlaniyor = false;
+
+function toast(t){ const el = $("toast"); el.textContent = t; el.classList.add("show"); setTimeout(() => el.classList.remove("show"), 2600); }
+
+/* ---------- giriş ---------- */
+async function girisEt(){
+  $("gXeta").textContent = "";
+  try{
+    const res = await fetch(`${API}/admin/giris`, { method:"POST", headers:{"Content-Type":"application/json"},
+      body: JSON.stringify({ email:$("gEmail").value, sifre:$("gSifre").value }) });
+    const d = await res.json();
+    if(!res.ok){ $("gXeta").textContent = d.detail || "Giriş alınmadı"; return; }
+    token = d.token; sessionStorage.setItem("wnr_token", token); panelAc();
+  }catch(e){ $("gXeta").textContent = "Backend-ə qoşulmaq olmadı"; }
+}
+function cixis(){ token = null; sessionStorage.removeItem("wnr_token"); $("app").hidden = true; $("giris").hidden = false; }
+function sessiyaBitdi(){ toast("Sessiya bitib, yenidən daxil ol"); cixis(); }
+function panelAc(){ $("giris").hidden = true; $("app").hidden = false; yukle(); }
+$("gBtn").onclick = girisEt;
+["gEmail","gSifre"].forEach(i => $(i).addEventListener("keydown", e => { if(e.key === "Enter") girisEt(); }));
+$("cixisBtn").onclick = cixis;
+
+/* ---------- siyahı ---------- */
+const katOptions = Object.entries(AD).map(([k,v]) => `<option value="${k}">${v}</option>`).join("");
+$("fKat").innerHTML = katOptions;
+$("kFiltr").innerHTML = '<option value="">Hamısı</option>' + katOptions;
+
+async function yukle(){
+  $("list").innerHTML = '<div class="empty">Yüklənir…</div>';
+  try{
+    const res = await fetch(API + "/");
+    const d = await res.json();
+    mehsullar = Array.isArray(d) ? d.slice().sort((a,b) => b[0] - a[0]) : [];
+    ciz();
+  }catch(e){ $("list").innerHTML = '<div class="empty">Backend-ə qoşulmaq olmadı.</div>'; }
+}
+
+function ciz(){
+  $("sMehsul").textContent = mehsullar.length;
+  $("sStok").textContent = mehsullar.reduce((t,m) => t + Number(m[7] || 0), 0);
+  $("sBitmis").textContent = mehsullar.filter(m => m[7] === 0).length;
+  const q = $("axtar").value.trim().toLowerCase(), k = $("kFiltr").value;
+  const list = mehsullar.filter(m => (!k || m[3] === k) && (!q || String(m[1]).toLowerCase().includes(q)));
+  if(!list.length){ $("list").innerHTML = `<div class="empty">${mehsullar.length ? "Heç nə tapılmadı." : "Hələ məhsul yoxdur. “Yeni məhsul” düyməsi ilə ilk məhsulu əlavə et."}</div>`; return; }
+  $("list").innerHTML = list.map(m => {
+    const [id, ad, qiymet, kat, olculer, , sekil, eded] = m;
+    const badge = eded === 0 ? '<span class="badge red">Stok bitib</span>' : eded <= 2 ? `<span class="badge warn">${eded} ədəd qalıb</span>` : `<span class="badge">${eded} ədəd</span>`;
+    return `<div class="row">
+      <img src="${esc(sekil)}" alt="" width="60" height="75">
+      <div><div class="n">${esc(ad)}</div><div class="m">${esc(AD[kat] || kat)} · ${esc(qiymet)} AZN · ${esc(olculer)}</div>${badge}</div>
+      <div class="a"><button class="btn ghost sm" data-e="${id}">Düzəlt</button><button class="btn danger sm" data-d="${id}">Sil</button></div>
+    </div>`;
+  }).join("");
+  $("list").querySelectorAll("[data-e]").forEach(b => b.onclick = () => forma(mehsullar.find(m => m[0] == b.dataset.e)));
+  $("list").querySelectorAll("[data-d]").forEach(b => b.onclick = () => sil(b.dataset.d));
+}
+$("axtar").oninput = ciz; $("kFiltr").onchange = ciz;
+
+/* ---------- forma ---------- */
+function chipler(){
+  const list = OLCULER[$("fKat").value] || [];
+  secilen = new Set([...secilen].filter(o => list.includes(o)));
+  if(list.length === 1) secilen.add(list[0]);
+  $("chips").innerHTML = list.map(o => `<button type="button" class="chip ${secilen.has(o) ? "on" : ""}" data-o="${o}">${o}</button>`).join("");
+  $("chips").querySelectorAll(".chip").forEach(b => b.onclick = () => {
+    const o = b.dataset.o;
+    secilen.has(o) ? secilen.delete(o) : secilen.add(o);
+    b.classList.toggle("on");
+  });
+}
+$("fKat").onchange = chipler;
+
+function onizle(src){ $("pBox").innerHTML = src ? `<img src="${esc(src)}" alt="">` : "+ Şəkil seç"; }
+$("fFoto").onchange = e => { const f = e.target.files[0]; onizle(f ? URL.createObjectURL(f) : null); };
+
+function forma(m){
+  redaktId = m ? m[0] : null;
+  $("fXeta").textContent = "";
+  $("dBaslig").textContent = m ? "Məhsulu düzəlt" : "Yeni məhsul";
+  $("dSaxla").textContent = m ? "Yadda saxla" : "Əlavə et";
+  $("fFoto").value = "";
+  $("fAd").value = m ? m[1] : "";
+  $("fQiymet").value = m ? m[2] : "";
+  $("fKat").value = m ? m[3] : "Jackets";
+  $("fEded").value = m ? m[7] : 1;
+  $("fAciqlama").value = m ? (m[5] || "") : "";
+  secilen = new Set(m && m[4] ? m[4].split(",").map(o => o.trim()) : []);
+  chipler();
+  onizle(m ? m[6] : null);
+  $("dBg").classList.add("open");
+  document.body.style.overflow = "hidden";
+  $("dBg").querySelector(".db").scrollTop = 0;
+}
+function baglaForma(){ $("dBg").classList.remove("open"); document.body.style.overflow = ""; }
+$("yeniBtn").onclick = () => forma(null);
+$("dBagla").onclick = $("dLegv").onclick = baglaForma;
+$("dBg").addEventListener("click", e => { if(e.target.id === "dBg") baglaForma(); });
+document.addEventListener("keydown", e => { if(e.key === "Escape") baglaForma(); });
+
+async function saxla(){
+  if(saxlaniyor) return;
+  const xeta = t => { $("fXeta").textContent = t; };
+  const ad = $("fAd").value.trim(), qiymet = $("fQiymet").value, eded = $("fEded").value, foto = $("fFoto").files[0];
+  xeta("");
+  if(!redaktId && !foto) return xeta("Şəkil seç");
+  if(!ad) return xeta("Adı yaz");
+  if(!qiymet || Number(qiymet) <= 0) return xeta("Qiyməti düzgün yaz");
+  if(secilen.size === 0) return xeta("Ən azı bir ölçü seç");
+  if(eded === "" || Number(eded) < 0) return xeta("Stok sayını yaz");
+
+  const fd = new FormData();
+  fd.append("ad", ad); fd.append("qiymet", qiymet);
+  fd.append("kateqoriya", $("fKat").value);
+  fd.append("olculer", [...secilen].join(","));
+  fd.append("aciqlama", $("fAciqlama").value.trim());
+  fd.append("eded", eded);
+  if(foto) fd.append("foto", foto);
+
+  saxlaniyor = true; $("dSaxla").disabled = true; $("dSaxla").textContent = "Yüklənir…";
+  try{
+    const res = await fetch(redaktId ? `${API}/deyistir/${redaktId}` : `${API}/mehsullar`,
+      { method: redaktId ? "PUT" : "POST", headers:{"x-admin-token": token}, body: fd });
+    if(res.status === 401){ baglaForma(); return sessiyaBitdi(); }
+    const d = await res.json().catch(() => ({}));
+    if(!res.ok) return xeta(typeof d.detail === "string" ? d.detail : "Əməliyyat alınmadı");
+    toast(redaktId ? "Məhsul yeniləndi" : "Məhsul əlavə olundu");
+    baglaForma(); yukle();
+  }catch(e){ xeta("Backend-ə qoşulmaq olmadı"); }
+  finally{ saxlaniyor = false; $("dSaxla").disabled = false; $("dSaxla").textContent = redaktId ? "Yadda saxla" : "Əlavə et"; }
+}
+$("dSaxla").onclick = saxla;
+
+async function sil(id){
+  const m = mehsullar.find(x => x[0] == id);
+  if(!confirm(`“${m ? m[1] : "Bu məhsul"}” silinsin?`)) return;
+  try{
+    const res = await fetch(`${API}/sil/${id}`, { method:"DELETE", headers:{"x-admin-token": token} });
+    if(res.status === 401) return sessiyaBitdi();
+    const d = await res.json().catch(() => ({}));
+    if(!res.ok) return toast("Xəta: " + (typeof d.detail === "string" ? d.detail : res.status));
+    toast("Məhsul silindi"); yukle();
+  }catch(e){ toast("Backend-ə qoşulmaq olmadı"); }
+}
+
+if(token) panelAc();
+</script>
+</body>
+</html>
