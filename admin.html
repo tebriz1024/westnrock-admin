@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="az">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>West'n'Rock | Admin</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#000;--panel:#161617;--line:#2a2a2c;--text:#f5f5f7;--muted:#86868b;--out:#ff453a}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font:15px/1.6 "Inter",system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+:focus-visible{outline:2px solid var(--text);outline-offset:3px}
+h1,h2{margin:0;font-weight:700;letter-spacing:-.035em}
+label{display:block;font-size:12px;font-weight:600;color:var(--muted);margin-bottom:6px}
+input,textarea,select{width:100%;font:inherit;color:var(--text);background:#000;border:1px solid #3a3a3c;border-radius:12px;padding:12px 14px;margin-bottom:14px;font-size:16px}
+input:focus,textarea:focus,select:focus{border-color:var(--text);outline:none}
+input[type=file]{padding:9px 12px}
+select{appearance:none;background-image:linear-gradient(45deg,transparent 50%,#888 50%),linear-gradient(135deg,#888 50%,transparent 50%);background-position:calc(100% - 20px) 50%,calc(100% - 14px) 50%;background-size:6px 6px;background-repeat:no-repeat}
+button{font:inherit;font-weight:500;padding:12px 22px;border-radius:980px;border:1px solid var(--text);background:var(--text);color:#000;cursor:pointer;transition:.15s}
+button:hover{opacity:.85}
+button.ghost{background:transparent;color:var(--text);border-color:#444}
+button.ghost:hover{border-color:var(--text);opacity:1}
+button.danger{background:transparent;color:var(--out);border-color:#4a1d19}
+button.danger:hover{background:var(--out);color:#000;border-color:var(--out);opacity:1}
+.err{color:var(--out);font-size:13px;min-height:1.3em;margin-top:10px}
+
+#girisEkrani{max-width:400px;margin:12vh auto;padding:36px 32px;background:var(--panel);border:1px solid var(--line);border-radius:24px}
+#girisEkrani h1{font-size:26px}
+#girisEkrani p{color:var(--muted);font-size:14px;margin:4px 0 26px}
+
+#panel{display:none;max-width:1100px;margin:0 auto;padding:0 20px 70px}
+.top{display:flex;align-items:center;justify-content:space-between;padding:18px 0;border-bottom:1px solid var(--line);margin-bottom:30px}
+.top .brand{font-size:19px;font-weight:700;letter-spacing:-.03em}
+.top .right{display:flex;gap:10px}
+.top a{text-decoration:none}
+
+.layout{display:grid;grid-template-columns:380px 1fr;gap:30px;align-items:start}
+@media(max-width:900px){.layout{grid-template-columns:1fr}.form-card{position:static}}
+@media(max-width:520px){.top .right button{padding:9px 14px;font-size:13px}#girisEkrani{margin:8vh 16px;padding:28px 22px}}
+.form-card{background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:24px;position:sticky;top:20px}
+.form-card h2{font-size:18px;margin-bottom:20px}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.chip-list{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px}
+.chip{font-size:13px;font-weight:600;padding:8px 14px;border:1px solid #444;border-radius:980px;cursor:pointer;user-select:none;color:var(--muted);transition:.15s}
+.chip:hover{border-color:var(--text);color:var(--text)}
+.chip.secili{background:var(--text);color:#000;border-color:var(--text)}
+.btns{display:flex;gap:10px}
+.btns button:first-child{flex:1}
+
+.list-head{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:14px}
+.list-head h1{font-size:26px}
+.list-head span{color:var(--muted);font-size:13px}
+.item{display:grid;grid-template-columns:56px 1fr auto;gap:16px;align-items:center;padding:12px;border:1px solid var(--line);border-radius:18px;margin-bottom:10px;background:var(--panel)}
+.item img{width:56px;height:70px;object-fit:cover;border-radius:10px;background:#1a1a1a}
+.item .name{font-weight:600}
+.item .meta{color:var(--muted);font-size:13px}
+.item .meta b{color:var(--text);font-weight:600}
+.item .meta .zero{color:var(--out);font-weight:600}
+.item .actions{display:flex;gap:8px}
+.item .actions button{padding:8px 14px;font-size:13px}
+@media(max-width:520px){.item{grid-template-columns:56px 1fr}.item .actions{grid-column:1/-1}.item .actions button{flex:1}}
+.empty{padding:40px;text-align:center;color:var(--muted);border:1px dashed #333;border-radius:18px}
+
+#toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%) translateY(20px);background:var(--text);color:#000;font-weight:600;padding:12px 22px;border-radius:980px;opacity:0;pointer-events:none;transition:.25s;max-width:90vw;z-index:99}
+#toast.show{opacity:1;transform:translateX(-50%)}
+</style>
+</head>
+<body>
+
+<div id="girisEkrani">
+  <h1>Admin girişi</h1>
+  <p>İdarəetmə panelinə daxil olmaq üçün məlumatlarını yaz.</p>
+  <label for="girisEmail">Email</label>
+  <input id="girisEmail" type="email" placeholder="email@gmail.com" autocomplete="username">
+  <label for="girisSifre">Şifrə</label>
+  <input id="girisSifre" type="password" placeholder="••••••••" autocomplete="current-password">
+  <button onclick="girisEt()" style="width:100%">Daxil ol</button>
+  <div class="err" id="girisXeta"></div>
+</div>
+
+<div id="panel">
+  <div class="top">
+    <div class="brand">West'n'Rock</div>
+    <div class="right">
+      <a href="index.html"><button class="ghost" type="button">Mağazaya bax</button></a>
+      <button class="ghost" onclick="cixis()">Çıxış</button>
+    </div>
+  </div>
+
+  <div class="layout">
+    <div class="form-card">
+      <h2 id="formBasliq">Yeni məhsul</h2>
+      <input type="hidden" id="redaktId">
+
+      <label for="fAd">Ad</label>
+      <input id="fAd" placeholder="Məhsulun adı">
+
+      <div class="row2">
+        <div><label for="fQiymet">Qiymət (AZN)</label><input id="fQiymet" type="number" step="0.01" min="0"></div>
+        <div><label for="fEded">Stok (say)</label><input id="fEded" type="number" min="0" value="5"></div>
+      </div>
+
+      <label for="fKateqoriya">Kateqoriya</label>
+      <select id="fKateqoriya">
+        <option value="Jackets">Gödəkçə</option>
+        <option value="Jeans">Cins</option>
+        <option value="Hoodies">Hudi</option>
+        <option value="T-Shirts">Tişört</option>
+        <option value="Shoes">Ayaqqabı</option>
+        <option value="Accessories">Aksesuar</option>
+      </select>
+
+      <label>Ölçülər</label>
+      <div class="chip-list" id="olcuChips"></div>
+
+      <label for="fFoto">Şəkil</label>
+      <input id="fFoto" type="file" accept="image/*">
+
+      <label for="fAciqlama">Açıqlama</label>
+      <textarea id="fAciqlama" rows="3" placeholder="Qısa təsvir"></textarea>
+
+      <div class="btns">
+        <button onclick="formGonder()" id="formBtn">Əlavə et</button>
+        <button class="ghost" id="legvBtn" style="display:none" onclick="formSifirla()">Ləğv et</button>
+      </div>
+      <div class="err" id="formXeta"></div>
+    </div>
+
+    <div>
+      <div class="list-head"><h1>Məhsullar</h1><span id="say"></span></div>
+      <div id="cedvel"></div>
+    </div>
+  </div>
+</div>
+
+<div id="toast"></div>
+
+<script>
+const API = "https://westnrock-backend.onrender.com";
+const OLCULER = {
+  Jackets:["XS","S","M","L","XL","XXL"],
+  Hoodies:["XS","S","M","L","XL","XXL"],
+  "T-Shirts":["XS","S","M","L","XL","XXL"],
+  Jeans:["28","30","32","34","36","38"],
+  Shoes:["36","37","38","39","40","41","42","43","44","45","46"],
+  Accessories:["Standart"]
+};
+let token = sessionStorage.getItem("wnr_token") || null;
+let mehsullar = [];
+let secilenOlculer = new Set();
+
+const AD = {Jackets:"Gödəkçə", Jeans:"Cins", Hoodies:"Hudi", "T-Shirts":"Tişört", Shoes:"Ayaqqabı", Accessories:"Aksesuar"};
+const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const $ = id => document.getElementById(id);
+
+function chipleriQur(){
+  const list = OLCULER[$("fKateqoriya").value] || [];
+  secilenOlculer = new Set([...secilenOlculer].filter(o => list.includes(o)));
+  if(list.length === 1 && secilenOlculer.size === 0) secilenOlculer.add(list[0]);
+  const box = $("olcuChips");
+  box.innerHTML = list.map(o => `<span class="chip ${secilenOlculer.has(o)?'secili':''}" data-olcu="${o}">${o}</span>`).join("");
+  box.querySelectorAll(".chip").forEach(el => el.onclick = () => {
+    const o = el.dataset.olcu;
+    if(secilenOlculer.has(o)){ secilenOlculer.delete(o); el.classList.remove("secili"); }
+    else{ secilenOlculer.add(o); el.classList.add("secili"); }
+  });
+}
+$("fKateqoriya").onchange = chipleriQur;
+chipleriQur();
+
+function toast(msg){
+  const t = $("toast"); t.textContent = msg; t.classList.add("show");
+  setTimeout(() => t.classList.remove("show"), 2600);
+}
+
+["girisEmail","girisSifre"].forEach(i => $(i).addEventListener("keydown", e => { if(e.key === "Enter") girisEt(); }));
+
+async function girisEt(){
+  const email = $("girisEmail").value, sifre = $("girisSifre").value, xeta = $("girisXeta");
+  xeta.textContent = "";
+  try{
+    const res = await fetch(`${API}/admin/giris`, {
+      method:"POST", headers:{"Content-Type":"application/json"},
+      body: JSON.stringify({email, sifre})
+    });
+    const data = await res.json();
+    if(!res.ok){ xeta.textContent = data.detail || "Giriş alınmadı"; return; }
+    token = data.token;
+    sessionStorage.setItem("wnr_token", token);
+    girisUgurlu();
+  }catch(e){ xeta.textContent = "Backend-ə qoşulmaq olmadı"; }
+}
+
+function cixis(){
+  token = null; sessionStorage.removeItem("wnr_token");
+  $("panel").style.display = "none";
+  $("girisEkrani").style.display = "block";
+}
+function girisUgurlu(){
+  $("girisEkrani").style.display = "none";
+  $("panel").style.display = "block";
+  yukle();
+}
+if(token) girisUgurlu();
+
+async function yukle(){
+  try{
+    const res = await fetch(API + "/");
+    mehsullar = await res.json();
+    ciz();
+  }catch(e){ $("cedvel").innerHTML = '<div class="empty">Backend-ə qoşulmaq olmadı.</div>'; }
+}
+
+function ciz(){
+  $("say").textContent = mehsullar.length + " məhsul";
+  if(!mehsullar.length){ $("cedvel").innerHTML = '<div class="empty">Hələ məhsul yoxdur. Soldakı formadan ilk məhsulu əlavə et.</div>'; return; }
+  $("cedvel").innerHTML = mehsullar.map(m => {
+    const [id, ad, qiymet, kat, olculer, , sekil, eded] = m;
+    return `<div class="item">
+      <img src="${esc(sekil)}" alt="">
+      <div>
+        <div class="name">${esc(ad)}</div>
+        <div class="meta">${esc(AD[kat] || kat)} · <b>${esc(qiymet)} AZN</b> · ${esc(olculer)} · ${eded === 0 ? '<span class="zero">Stok bitib</span>' : eded + ' ədəd'}</div>
+      </div>
+      <div class="actions">
+        <button class="ghost" data-edit="${id}">Düzəlt</button>
+        <button class="danger" data-del="${id}">Sil</button>
+      </div>
+    </div>`;
+  }).join("");
+  $("cedvel").querySelectorAll("[data-edit]").forEach(b => b.onclick = () => redakteBasla(mehsullar.find(m => m[0] == b.dataset.edit)));
+  $("cedvel").querySelectorAll("[data-del]").forEach(b => b.onclick = () => mehsulSil(b.dataset.del));
+}
+
+function olculeriQeydEt(str){
+  secilenOlculer = new Set(str ? str.split(",").map(o => o.trim()) : []);
+  chipleriQur();
+}
+
+function formSifirla(){
+  $("redaktId").value = ""; $("fAd").value = ""; $("fQiymet").value = "";
+  $("fKateqoriya").value = "Jackets"; $("fEded").value = 5;
+  $("fAciqlama").value = ""; $("fFoto").value = "";
+  olculeriQeydEt("");
+  $("formBasliq").textContent = "Yeni məhsul";
+  $("formBtn").textContent = "Əlavə et";
+  $("legvBtn").style.display = "none";
+}
+
+function redakteBasla(m){
+  const [id, ad, qiymet, kat, olculer, aciqlama, , eded] = m;
+  $("redaktId").value = id; $("fAd").value = ad; $("fQiymet").value = qiymet;
+  $("fKateqoriya").value = kat; $("fEded").value = eded; $("fAciqlama").value = aciqlama || "";
+  olculeriQeydEt(olculer);
+  $("formBasliq").textContent = "Məhsulu redaktə et";
+  $("formBtn").textContent = "Yadda saxla";
+  $("legvBtn").style.display = "inline-block";
+  window.scrollTo({top:0, behavior:"smooth"});
+}
+
+async function formGonder(){
+  const id = $("redaktId").value, xeta = $("formXeta");
+  xeta.textContent = "";
+  if(secilenOlculer.size === 0){ xeta.textContent = "Ən azı bir ölçü seç"; return; }
+  const fd = new FormData();
+  fd.append("ad", $("fAd").value);
+  fd.append("qiymet", $("fQiymet").value);
+  fd.append("kateqoriya", $("fKateqoriya").value);
+  fd.append("olculer", [...secilenOlculer].join(","));
+  fd.append("aciqlama", $("fAciqlama").value);
+  fd.append("eded", $("fEded").value);
+  const foto = $("fFoto").files[0];
+  if(foto) fd.append("foto", foto);
+
+  const url = id ? `${API}/deyistir/${id}` : `${API}/mehsullar`;
+  try{
+    const res = await fetch(url, { method: id ? "PUT" : "POST", headers: {"x-admin-token": token}, body: fd });
+    if(res.status === 401){ toast("Sessiya bitib, yenidən daxil ol"); cixis(); return; }
+    const data = await res.json().catch(() => ({}));
+    if(!res.ok){ xeta.textContent = data.detail || "Əməliyyat alınmadı"; return; }
+    toast(id ? "Məhsul yeniləndi" : "Məhsul əlavə olundu");
+    formSifirla(); yukle();
+  }catch(e){ xeta.textContent = "Backend-ə qoşulmaq olmadı"; }
+}
+
+async function mehsulSil(id){
+  if(!confirm("Bu məhsul silinsin?")) return;
+  const res = await fetch(`${API}/sil/${id}`, { method:"DELETE", headers:{"x-admin-token": token} });
+  if(res.status === 401){ toast("Sessiya bitib, yenidən daxil ol"); cixis(); return; }
+  const data = await res.json().catch(() => ({}));
+  if(!res.ok){ toast("Xəta: " + (data.detail || res.status)); return; }
+  toast("Məhsul silindi");
+  yukle();
+}
+</script>
+</body>
+</html>
